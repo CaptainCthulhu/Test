@@ -13,7 +13,7 @@ namespace Test
     class SimulationObject
     {
         internal XYValue location;
-        internal XYValue velocity;
+        internal XYValue vector;
         internal XYValue size;
         internal Color objectColour;
         internal Random rand;
@@ -36,39 +36,17 @@ namespace Test
         {
             location = new XYValue(e.X, e.Y);
             this.rand = rand;
-            velocity.X = (float)rand.NextDouble() * rand.Next(-1, 2);
-            velocity.Y = (float)rand.NextDouble() * rand.Next(-1, 2);
+            vector.X = (float)rand.NextDouble() * rand.Next(-1, 2);
+            vector.Y = (float)rand.NextDouble() * rand.Next(-1, 2);
             size.X = (float)rand.Next(20, 100);
             size.Y = (float)rand.Next(20, 100);
             rotation = rand.Next(0, 360);
         }
 
-        public void ObjectCollision(SimulationObject curObj, XYValue updatedPosition, List<SimulationObject> objs)
+        public void ChangeVector(XYValue newVector)
         {
-            objs = objs.Where(x => x != curObj).ToList();
-
-            RectangleF mainobj = new RectangleF(
-                updatedPosition.X, 
-                updatedPosition.Y, 
-                updatedPosition.X, 
-                updatedPosition.Y
-                );
-
-            foreach (SimulationObject obj in objs)
-            {
-                RectangleF objRect = new RectangleF(
-                obj.location.X,
-                obj.location.Y,
-                obj.size.X,
-                obj.size.Y
-                );
-
-                if (mainobj.IntersectsWith(objRect))
-                {
-
-                }
-
-            }
+            vector.X += newVector.X;
+            vector.Y += newVector.Y;
         }
 
         public RectangleF GetLocationRectangle()
@@ -83,23 +61,21 @@ namespace Test
 
         public XYValue GetVelocity()
         {
-            return velocity;
+            return vector;
         }
 
         public XYValue UpdateLocation(SimulationObject simObj, List<SimulationObject> SimObjs)
         {
-            XYValue newItem = simObj.location;
-            ObjectCollision(simObj, newItem, SimObjs);
+            XYValue newItem = simObj.location;            
             return newItem;
         }
-
 
         public void Update(Graphics g)
         {
             using (Pen pen = new Pen(objectColour))
             {
-                location.X += velocity.X;
-                location.Y += velocity.Y;
+                location.X += vector.X;
+                location.Y += vector.Y;
                 RectangleF rect = new RectangleF(location.X, location.Y, size.X, size.Y);
                 using (Matrix m = new Matrix())
                 {
