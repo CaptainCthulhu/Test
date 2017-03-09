@@ -45,7 +45,12 @@ namespace Test
 
         public void ObjectCollision(SimulationObject simObj, List<SimulationObject> objs)
         {
+            objs = objs.Where(x => x == simObj).ToList();
 
+            foreach (SimulationObject obj in objs)
+            {
+
+            }
         }
 
 
