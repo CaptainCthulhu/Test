@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
-using System.Threading;
 
 namespace Test
 {
@@ -52,13 +51,12 @@ namespace Test
                                     using (Graphics g = bg.Graphics)
                                     {
                                         lock (cars)
-                                        {
+
                                             foreach (Car x in cars)
                                                 x.Update(g);
 
-                                            if (bg.Graphics != null)
-                                                bg.Render();
-                                        }
+                                        if (bg.Graphics != null)
+                                            bg.Render();
                                     }
                                 }
                             }
@@ -68,7 +66,7 @@ namespace Test
                     {
                         Console.WriteLine(e.ToString());
                         break;
-                    
+
                     }
                 }
                 frameTimer.Stop();
@@ -82,11 +80,11 @@ namespace Test
         {
             Thread renderThread = new Thread(UpdateWorld);
             renderThread.IsBackground = true;
-            renderThread.Start();            
+            renderThread.Start();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {            
+        {
             stopProgram = true;
         }
     }

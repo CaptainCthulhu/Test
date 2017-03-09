@@ -32,6 +32,11 @@ namespace Test
             }
         }
 
+        public SimulationObject()
+        {
+
+        }
+
         public SimulationObject(MouseEventArgs e, Random rand)
         {
             location = new XYValue(e.X, e.Y);
@@ -43,22 +48,40 @@ namespace Test
             rotation = rand.Next(0, 360);
         }
 
-        public void ObjectCollision(SimulationObject simObj, List<SimulationObject> objs)
+        public void ObjectCollision(SimulationObject curObj, XYValue updatedPosition, List<SimulationObject> objs)
         {
-            objs = objs.Where(x => x == simObj).ToList();
+            objs = objs.Where(x => x != curObj).ToList();
+
+            RectangleF mainobj = new RectangleF(
+                updatedPosition.X, 
+                updatedPosition.Y, 
+                updatedPosition.X, 
+                updatedPosition.Y
+                );
 
             foreach (SimulationObject obj in objs)
             {
+                RectangleF objRect = new RectangleF(
+                obj.location.X,
+                obj.location.Y,
+                obj.size.X,
+                obj.size.Y
+                );
+
+                if (mainobj.IntersectsWith(objRect))
+                {
+
+                }
 
             }
         }
 
 
 
-        public XYValue UpdateLocation(SimulationObject simObj)
+        public XYValue UpdateLocation(SimulationObject simObj, List<SimulationObject> SimObjs)
         {
             XYValue newItem = simObj.location;
-
+            ObjectCollision(simObj, newItem, SimObjs);
             return newItem;
         }
 
@@ -84,7 +107,6 @@ namespace Test
                     g.ResetTransform();
                 }
             }
-
         }
     }
 }
