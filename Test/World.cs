@@ -5,21 +5,35 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Test
 {
     class World
     {
+        int frameTime = 16;
         int Height;
         int Width;
         static Random RandInstance;
         public Boolean stopProgram = false;
+        Form1 Form;
+        List<Car> cars = new List<Car>();
 
-        public World(int height, int width, Random random)
+        public World(Form1 form, int height, int width, Random random)
         {
+            Form = form;
             Height = height;
             Width = width;
             RandInstance = random;
+        }
+
+        public void AddCar(MouseEventArgs e)
+        {
+            lock (cars)
+            {
+                cars.Add(new Car(e, RandInstance));
+            }
         }
 
         public void UpdateWorld()
@@ -32,11 +46,11 @@ namespace Test
                 {
                     try
                     {
-                        using (Graphics gr = CreateGraphics())
+                        using (Graphics gr = Form.CreateGraphics())
                         {
                             using (BufferedGraphicsContext bgc = new BufferedGraphicsContext())
                             {
-                                using (BufferedGraphics bg = bgc.Allocate(gr, this.DisplayRectangle))
+                                using (BufferedGraphics bg = bgc.Allocate(gr, Form.DisplayRectangle))
                                 {
                                     bg.Graphics.Clear(Color.White);
                                     bg.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
