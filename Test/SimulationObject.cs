@@ -32,11 +32,6 @@ namespace Test
             }
         }
 
-        public SimulationObject()
-        {
-
-        }
-
         public SimulationObject(MouseEventArgs e, Random rand)
         {
             location = new XYValue(e.X, e.Y);
@@ -76,7 +71,20 @@ namespace Test
             }
         }
 
+        public RectangleF GetLocationRectangle()
+        {
+            return new RectangleF(
+                location.X,
+                location.Y,
+                size.X,
+                size.Y
+                );
+        }
 
+        public XYValue GetVelocity()
+        {
+            return velocity;
+        }
 
         public XYValue UpdateLocation(SimulationObject simObj, List<SimulationObject> SimObjs)
         {
