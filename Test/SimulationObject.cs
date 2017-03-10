@@ -12,74 +12,77 @@ namespace Test
 {
     class SimulationObject
     {
-        internal XYValue location;
-        internal XYValue vector;
-        internal XYValue size;
-        internal Color objectColour;
-        internal Random rand;
-        internal float rotation;
-
-
-        public struct XYValue
-        {
-            internal float X;
-            internal float Y;
-
-            public XYValue(float x, float y)
-            {
-                X = x;
-                Y = y;
-            }
-        }
+        internal Physics.VectorF LocationF;
+        internal Physics.VectorF VelocityF;
+        internal Physics.VectorF SizeF;
+        internal Color ObjectColour;
+        internal Random Rand;
+        internal float Rotation;
+        internal float Mass;
 
         public SimulationObject(MouseEventArgs e, Random rand)
         {
-            location = new XYValue(e.X, e.Y);
-            this.rand = rand;
-            vector.X = (float)rand.NextDouble() * rand.Next(-1, 2);
-            vector.Y = (float)rand.NextDouble() * rand.Next(-1, 2);
-            size.X = (float)rand.Next(20, 100);
-            size.Y = (float)rand.Next(20, 100);
-            rotation = rand.Next(0, 360);
+            LocationF = new Physics.VectorF(e.X, e.Y);
+            this.Rand = rand;
+            VelocityF.X = (float)rand.NextDouble() * rand.Next(-1, 2);
+            VelocityF.Y = (float)rand.NextDouble() * rand.Next(-1, 2);
+            SizeF.X = (float)rand.Next(20, 100);
+            SizeF.Y = (float)rand.Next(20, 100);
+            Rotation = rand.Next(0, 360);
+            Mass = SizeF.Y * SizeF.X;
         }
 
-        public void ChangeVector(XYValue newVector)
+        public void ChangeVelocity(Physics.VectorF newVector)
         {
-            vector.X += newVector.X;
-            vector.Y += newVector.Y;
+            VelocityF.X += newVector.X;
+            VelocityF.Y += newVector.Y;
+        }
+
+        public Physics.PhysicDetails GetPhysDetails()
+        {
+            return new Physics.PhysicDetails(
+                GetLocationRectangle(),
+                VelocityF,
+                Mass);
+            
         }
 
         public RectangleF GetLocationRectangle()
         {
             return new RectangleF(
-                location.X,
-                location.Y,
-                size.X,
-                size.Y
+                LocationF.X,
+                LocationF.Y,
+                SizeF.X,
+                SizeF.Y
                 );
         }
 
-        public XYValue GetVelocity()
+        public float GetMass()
         {
-            return vector;
+            return Mass;
         }
 
-        public XYValue UpdateLocation(SimulationObject simObj, List<SimulationObject> SimObjs)
+        public Physics.VectorF GetVelocity()
         {
-            XYValue newItem = simObj.location;            
+            return VelocityF;
+        }    
+
+        public Physics.VectorF UpdateLocation(SimulationObject simObj, List<SimulationObject> SimObjs)
+        {
+            Physics.VectorF newItem = simObj.LocationF;
             return newItem;
         }
 
         public void Update(Graphics g)
         {
-            using (Pen pen = new Pen(objectColour))
+            using (Pen pen = new Pen(ObjectColour))
             {
-                location.X += vector.X;
-                location.Y += vector.Y;
-                RectangleF rect = new RectangleF(location.X, location.Y, size.X, size.Y);
+                LocationF.X += VelocityF.X;
+                LocationF.Y += VelocityF.Y;
+                RectangleF rect = new RectangleF(LocationF.X, LocationF.Y, SizeF.X, SizeF.Y);
                 using (Matrix m = new Matrix())
                 {
-                    m.RotateAt(rotation, new PointF(rect.Left + (rect.Width / 2),
+                    m.RotateAt(Rotation, new PointF(rect.Left + (rect.Width / 2),
                                               rect.Top + (rect.Height / 2)));
                     g.Transform = m;
                     g.DrawRectangle(pen, new Rectangle(

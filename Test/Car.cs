@@ -13,11 +13,11 @@ namespace Test
 
         public Car(MouseEventArgs e, Random rand): base(e, rand)
         {
-            this.objectColour = Color.FromArgb(
+            this.ObjectColour = Color.FromArgb(
                 rand.Next(255),
-                rand.Next(0,128),
-                rand.Next(0,128),
-                rand.Next(0,128)
+                rand.Next(0,255),
+                rand.Next(0,255),
+                rand.Next(0,255)
                 );
         }
         

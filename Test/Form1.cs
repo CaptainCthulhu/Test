@@ -8,34 +8,34 @@ namespace Test
 {
     public partial class Form1 : Form
     {
-        public static Random random = new Random();
-        SimulationObject.XYValue screenSize = new SimulationObject.XYValue(800, 800);
-        World world;
+        static Random random = new Random();
+        int DisplayHeight = 800;
+        int DislayWidth = 800;        
+        World WorldInstance;
 
         public Form1()
         {
             InitializeComponent();
-            world = new World(this, (int)screenSize.X, (int)screenSize.Y, new Random());
-            Width = (int)screenSize.X;
-            Height = (int)screenSize.Y;
+            base.Width = DislayWidth;
+            base.Height = DisplayHeight;
+            WorldInstance = new World(this, base.Width, base.Height, new Random());
         }
 
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
-            world.AddCar(e);
-            
+            WorldInstance.AddCar(e);            
         }
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            Thread renderThread = new Thread(world.UpdateWorld);
+            Thread renderThread = new Thread(WorldInstance.UpdateWorld);
             renderThread.IsBackground = true;
             renderThread.Start();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            world.stopProgram = true;
+            WorldInstance.StopWorld();
         }
     }
 }

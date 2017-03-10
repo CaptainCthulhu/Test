@@ -19,6 +19,7 @@ namespace Test
         public Boolean stopProgram = false;
         Form1 Form;
         List<Car> cars = new List<Car>();
+        Stopwatch frameTimer = new Stopwatch();
 
         public World(Form1 form, int height, int width, Random random)
         {
@@ -26,6 +27,57 @@ namespace Test
             Height = height;
             Width = width;
             RandInstance = random;
+        }
+
+        public void UpdateWorld()
+        {
+            while (!stopProgram)
+            {
+                frameTimer.Restart();
+                if (Form != null)
+                {
+                    try
+                    {
+                        using (BufferedGraphics bg = GetGraphics())
+                        {
+                            bg.Graphics.Clear(Color.White);
+                            bg.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                            using (Graphics g = bg.Graphics)
+                            {
+                                lock (cars)
+
+                                    foreach (Car x in cars)
+                                    {
+                                        foreach (Car y in cars)
+                                        {
+                                            if (x != y)
+                                                x.ChangeVelocity(Physics.Collision(x.GetPhysDetails(), y.GetPhysDetails()));
+                                            else
+                                                Console.WriteLine("Same Object");
+                                        }
+                                        x.Update(g);
+                                    }
+
+                                if (bg.Graphics != null)
+                                    bg.Render();
+                            }
+                        }
+                    }
+
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.ToString());
+                        break;
+                    }
+                }
+                if (frameTimer.ElapsedMilliseconds < frameTime)
+                    System.GC.Collect();
+                frameTimer.Stop();
+                if (frameTimer.ElapsedMilliseconds < frameTime)
+                    Thread.Sleep(frameTime - (int)frameTimer.ElapsedMilliseconds);
+                else
+                    Thread.Sleep(0);
+            }
         }
 
         public void AddCar(MouseEventArgs e)
@@ -36,51 +88,14 @@ namespace Test
             }
         }
 
-        public void UpdateWorld()
+        public void StopWorld()
         {
-            Stopwatch frameTimer = new Stopwatch();
-            while (!stopProgram)
-            {
-                frameTimer.Restart();
-                if (this != null)
-                {
-                    try
-                    {
-                        using (Graphics gr = Form.CreateGraphics())
-                        {
-                            using (BufferedGraphicsContext bgc = new BufferedGraphicsContext())
-                            {
-                                using (BufferedGraphics bg = bgc.Allocate(gr, Form.DisplayRectangle))
-                                {
-                                    bg.Graphics.Clear(Color.White);
-                                    bg.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                                    using (Graphics g = bg.Graphics)
-                                    {
-                                        lock (cars)
-
-                                            foreach (Car x in cars)
-                                                x.Update(g);
-
-                                        if (bg.Graphics != null)
-                                            bg.Render();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.ToString());
-                        break;
-
-                    }
-                }
-                frameTimer.Stop();
-                if (frameTimer.ElapsedMilliseconds < frameTime)
-                    Thread.Sleep(frameTime - (int)frameTimer.ElapsedMilliseconds);
-                else Thread.Sleep(0);
-            }
+            stopProgram = true;
         }
 
+        BufferedGraphics GetGraphics()
+        {
+                    return new BufferedGraphicsContext().Allocate(Form.CreateGraphics(), Form.DisplayRectangle);                            
+        }
     }
 }
