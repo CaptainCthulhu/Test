@@ -34,8 +34,8 @@ namespace Test
 
         public void ChangeVelocity(Physics.VectorF newVector)
         {
-            VelocityF.X += newVector.X;
-            VelocityF.Y += newVector.Y;
+            VelocityF.X = newVector.X;
+            VelocityF.Y = newVector.Y;
         }
 
         public Physics.PhysicDetails GetPhysDetails()

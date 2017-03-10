@@ -37,12 +37,13 @@ namespace Test
 
         public static VectorF Collision(PhysicDetails obj1, PhysicDetails obj2)
         {
-            VectorF newVectorF = obj1.Vector;
+            VectorF newVectorF = new VectorF(obj1.Vector.X, obj1.Vector.Y);
             if (obj1.Rect.IntersectsWith(obj2.Rect))
             {
-                newVectorF.X *= -1;
-                newVectorF.Y *= -1;
+                newVectorF.X = obj1.Vector.X * -1;
+                newVectorF.Y = obj1.Vector.Y * -1;
             }
+            
             return newVectorF;
         }
     }

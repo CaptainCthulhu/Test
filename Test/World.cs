@@ -50,10 +50,8 @@ namespace Test
                                     {
                                         foreach (Car y in cars)
                                         {
-                                            if (x != y)
-                                                x.ChangeVelocity(Physics.Collision(x.GetPhysDetails(), y.GetPhysDetails()));
-                                            else
-                                                Console.WriteLine("Same Object");
+                                           if (x != y)
+                                                x.ChangeVelocity(Physics.Collision(x.GetPhysDetails(), y.GetPhysDetails()));                                           
                                         }
                                         x.Update(g);
                                     }
